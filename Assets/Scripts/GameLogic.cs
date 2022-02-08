@@ -64,6 +64,11 @@ public class GameLogic : MonoBehaviour
             float rotationValue = SectorData[itemName];
             StartCoroutine(Rotate(2.0f, 720+rotationValue, itemName));
         }
+        else
+        {
+            float rotationValue = SectorData[sectorName];
+            StartCoroutine(Rotate(2.0f, 720 + rotationValue, sectorName));
+        }
     }
 
     IEnumerator Rotate(float duration, float angle, string itemName)
