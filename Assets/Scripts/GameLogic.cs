@@ -7,7 +7,7 @@ public class GameLogic : MonoBehaviour
 {
     public ItemList itemList;
     public Transform ClosingAnimation;
-    public GameObject Wheel;
+    public GameObject Wheel, WheelInside;
     private Dictionary<string, int> Occurences = new Dictionary<string, int>();
     public Text EndingText;
     
@@ -68,29 +68,34 @@ public class GameLogic : MonoBehaviour
 
     IEnumerator Rotate(float duration, float angle, string itemName)
     {
-        float startRotation = transform.eulerAngles.z;
+        float startRotation = WheelInside.transform.eulerAngles.z;
         float endRotation = startRotation + angle;
         float t = 0.0f;
         while (t < duration)
         {
             t += Time.deltaTime;
             float zRotation = Mathf.Lerp(startRotation, endRotation, t / duration) % 360.0f;
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, zRotation);
+            WheelInside.transform.eulerAngles = new Vector3(WheelInside.transform.eulerAngles.x,
+                WheelInside.transform.eulerAngles.y, zRotation);
             yield return null;
         }
         var SelectedItem = (GameObject.Find("/Canvas/Wheel/WheelData/WheelInside/" + itemName));
         SelectedItem.transform.SetParent(ClosingAnimation);
         EndingText.text = "Claim";
-        yield return new WaitForSeconds(1);
-        float time = 0f;
-        while (time < 1f)
+        yield return new WaitForSeconds(1.5f);
+        Wheel.SetActive(false);
+        Vector3 startScale = SelectedItem.transform.localScale;
+        Vector3 endScale = startScale + new Vector3(0.5f,0.5f,0.5f);
+        Vector3 startposition = SelectedItem.transform.localPosition;
+        Vector3 endposition = startposition + new Vector3(0.0f, -50.0f, 0.0f);
+        float tt = 0.0f;
+        while (tt < duration)
         {
-            time += Time.deltaTime;
-            ClosingAnimation.localScale = Vector3.Lerp(ClosingAnimation.localScale,
-                ClosingAnimation.localScale *0.2f, t);
+            tt += Time.deltaTime;
+            SelectedItem.transform.localScale = Vector3.Lerp(startScale, endScale, tt);
+            SelectedItem.transform.localPosition = Vector3.Lerp(startposition, endposition, tt);
             yield return null;
         }
-        Wheel.SetActive(false);
     }
 
 }
